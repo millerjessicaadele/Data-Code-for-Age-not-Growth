@@ -1,0 +1,96 @@
+Metadata,
+Older and slower: unexpected effects of marine heatwaves on larval fish,
+"Jessica A. Miller1, L. Zoe Almeida1, Lauren A. Rogers2, Hillary L. Thalmann1, Rebecca M. Forney1, and Benjamin J. Laurel3",
+,
+"Coastal Oregon Marine Experiment Station, Hatfield Marine Science Center, Department of Fisheries, Wildlife, and Conservation Sciences, Oregon State University, 2030 SE Marine Science Drive, Newport, Oregon 97365, USA",
+"2Recruitment Processes Program, Resource Assessment and Conservation Engineering Division, Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA, Seattle, WA, USA",
+ ,
+*Corresponding author: Jessica.Miller@oregonstate.edu,
+,
+ORCIDs:,
+ JAM: 0000-0002-6491-4085. LZA: 0000-0003-0280-5964. LAR: 0000-0003-3305-6441. HLT: 0000-0002-2112-5131.  BJL: 0000-0001-7150-0879.  ,
+,
+"R script files for analyses, available in a GitHub Data Repository.",
+,
+1.0_Larval_Ages,
+2.0_Larval_dailies,
+2.1_Larval_relativegrowth,
+3.0_Larval_CDD,
+,
+Data files used in R script are listed below and available in GitHub Data Repository.,
+,
+1_larvalageatcapture.csv,
+1_HaulData.csv,
+1_Pcod_LarvalLength.csv,
+2_all_larvae_somatic_oto.csv,
+2_individuals.csv,
+,
+Metadata (additional methodological details are in paper).,
+,
+1_larvalageatcapture.csv,
+,
+Field,Attribute
+Unique.ID,Unique number for each larvae
+sl_micron,notochord or total length of larva in micons
+mean_age,estimated age of larva based on otolith increment analysis
+Cruise,NOAA cruise identifier
+Station,number of station sampled
+DAY,day of collection
+MONTH,month of collection
+YEAR,year of collection
+HAUL_ID,NOAA assigned idenifier for haul
+HAUL_NAME,NOAA assigned single number identifier for haul
+capdate,date of collection
+hatch.date,estimated hatch date of larvae 
+hatch.date.noYear,hatch date of larvae without year
+hdate,hatch date of larvae in day of year format (1 to 365_
+measured_sl_micron,measured total larval length in microns
+station,number of station sampled
+,
+1_HaulData.csv,
+,
+Field,Attribute
+HAUL_ID ,NOAA assigned idenifier for haul
+CRUISE ,NOAA cruise identifier
+STATION_NAME,number of station sampled
+YEAR,year of collection
+MONTH,month of collection
+DAY,day of collection
+GMT_DATE_TIME,date in Greenwich Mean Time
+,
+,
+1_Pcod:LarvalLength.csv,
+,
+Field,Attribute
+OBJECTID,"unique id for larvae collected from net 1 of the 60 cm bongo net by NOAA and measured by the Plankton Sorting and Identification Center in Szczecin, Poland"
+FREQUENCY,number of larvae in this size class in this haul and net
+HAUL_ID,unique id for haul
+CRUISE,NOAA abbreviation for cruise/survey
+YEAR,year of collection
+CORRECTED_LENGTH,length of preserved larvae
+FcorrLen_mm,total length of larvae corrected for formalin-preservation
+station,number of station sampled
+,
+2_all_larvae_somatic_oto.csv,
+,
+Field,Attribute
+Unique.ID,unique id for larvae collected from net 1 of the 60-cm paired bongo frame equipped with either 333- or 505-?m mesh nets and flow meters net by NOAA and measured in Poland
+dayoflife,day of life for this larva
+oto_inc_micron,otolith increment width for this day of life in microns
+sl_micron,total length of larvae in microns
+capdate,capture date of larvae
+Date,date for this day of life for this larvae
+hatch.date,estimated hatch date of larvae 
+hatch.date.noYear,hatch date of larvae without year
+hdate,hatch date of larvae in day of year format (1 to 365)
+YEAR,year of collection
+age,estimated age of larva based on otolith increment analysis
+yr_f,year of collection
+doy,day of year in the life of this larvae
+TempApplied,water temperature applied for this day in the life of this larvae
+hw,"category for marine heatwave status (""before HW"", ""during and after HW"")"
+cum_OR,cumulative otolith radius along the proximate-distal plane of the tranverse section as of this day of the year for this larvae
+OR_cpt,otolith radius along the proximate-distal plane of the tranverse section at capture for this larvae
+sl_mm,total length of larva in mm
+BC_estimate,back-calculated length estimate for this larva on this day of year
+daily_gr,estimated daily growth rate in mm for this larva on this day of year
