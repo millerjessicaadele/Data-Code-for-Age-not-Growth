@@ -1,5 +1,5 @@
 Metadata,
-Older and slower: unexpected effects of marine heatwaves on larval fish,
+" ""Age, not growth, explains larger body size of Pacific cod larvae during recent marine heatwaves""",
 "Jessica A. Miller1, L. Zoe Almeida1, Lauren A. Rogers2, Hillary L. Thalmann1, Rebecca M. Forney1, and Benjamin J. Laurel3",
 ,
 "Coastal Oregon Marine Experiment Station, Hatfield Marine Science Center, Department of Fisheries, Wildlife, and Conservation Sciences, Oregon State University, 2030 SE Marine Science Drive, Newport, Oregon 97365, USA",
@@ -63,7 +63,6 @@ GMT_DATE_TIME,date in Greenwich Mean Time
 ,
 Field,Attribute
 OBJECTID,"unique id for larvae collected from net 1 of the 60 cm bongo net by NOAA and measured by the Plankton Sorting and Identification Center in Szczecin, Poland"
-FREQUENCY,number of larvae in this size class in this haul and net
 HAUL_ID,unique id for haul
 CRUISE,NOAA abbreviation for cruise/survey
 YEAR,year of collection

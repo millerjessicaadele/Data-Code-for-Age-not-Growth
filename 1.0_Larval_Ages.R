@@ -1,10 +1,31 @@
 
+#07/22/2024 with R version 4.2.2 (2022-10-31 ucrt)
+#Final code for Miller et al. "Age, not growth, explains larger body size of Pacific cod larvae during recent marine heatwaves"
+#Use age-length data from aged otoliths to predict age for all survey larvae
+#Evaluate relationship between mean temperature and hatch date
+#LMM to examine hatch dates before and since MHWs
+#LMM to examine size-at-age before and since MHWs
 
-#Final code for Miller et al. Older and slower: unexpected effects of marine heatwaves on larval fish.
-#06/04/2024 with R version 4.2.2 (2022-10-31 ucrt)
+#check version of R 
+R.Version()
 
+if(!require(ggpubr)) install.packages("ggpubr")
+if (!require(rstudioapi)) install.packages('rstudioapi')
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(ggplot2)) install.packages('ggplot2')
+if (!require(dplyr)) install.packages('dplyr')
+if (!require(ggeffects)) install.packages('ggeffects')
+if (!require(lme4)) install.packages('lme4')
+if (!require(nlme)) install.packages('nmle')
+if (!require(AICcmodavg)) install.packages('AICcmodavg')
+if (!require(gvlma)) install.packages('gvlma')
+if (!require(car)) install.packages('car')
+if (!require(performance)) install.packages('performance')
+if (!require(MuMin)) install.packages('MuMIn')
+if (!require(FSA)) install.packages('FSA')
+
+library(ggpubr)
 library(tidyverse)
-library(readr)
 library(ggplot2)
 library(effects)
 library(ggeffects)
@@ -17,6 +38,7 @@ library(rstudioapi)
 library(performance)
 library(MuMIn)
 library(FSA) 
+
 
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -212,8 +234,8 @@ check_model(hdshift)
 plot(resid(hdshift))
 plot(hdshift)
 r.squaredGLMM(hdshift)
-
-
+library(report)
+report(hdshift)
 ####-----IMPORT ALL PREDICTED AND AGED -INCLUDES PLOT OF JUST AGED--####
 
 all_larvae_age_locale <- read.csv("STATIONFINAL_all_larvae_agewlocale_ran.YEAR.csv")
@@ -231,7 +253,7 @@ color <- c("black", "lightsteelblue3")
 all <- ggplot(data = all_larvae_age_locale, aes(x = hdate, group = fYr, fill=hw)) + 
   geom_density(adjust =1.5, alpha =0.4)+
   scale_fill_manual(values=color)+
-  xlab("Hatch date for all fish") + 
+  xlab("Calendar hatch date for all fish") + 
   ylab("Density") +
   xlim(50, 160)+
   theme_classic() +
@@ -251,7 +273,7 @@ larvae_aged <- all_larvae_age_locale %>%
 age <- ggplot(data = larvae_aged, aes(x = hdate, group = fYr, fill=hw)) + 
   geom_density(adjust =1.5, alpha =0.4)+
   scale_fill_manual(values=color)+
-  xlab("Hatch date for aged fish") + 
+  xlab("Calendar hatch date for aged fish") + 
   ylab("Density") +
   xlim(50, 160)+
   theme_classic() +
@@ -259,7 +281,9 @@ age <- ggplot(data = larvae_aged, aes(x = hdate, group = fYr, fill=hw)) +
   theme(axis.text = element_text(size = 20), axis.title = element_text(size = 20),
         legend.text = element_text(size = 18), legend.title = element_blank())
 age
+
 ggarrange(ncol = 1, age, all)
+
 ggsave("hatchdates.jpg", plot = last_plot(), device = "jpg",
         width = 10, height = 8, units = "in", dpi = 300)
 
@@ -278,9 +302,9 @@ sizeatage <- larvae2 %>%
   mutate(scaledAge = c(scale(age))) %>%
   mutate(scaledYr = c(scale(YEAR))) %>%
   mutate(fYr = as.factor(YEAR)) %>%
-  filter(sl_mm > 4.79) %>%
-  filter(sl_mm < 22) %>%
-  filter(age < 52) %>%
+  filter(sl_mm > 4.8) %>%
+  filter(sl_mm < 17) %>%
+  filter(age < 51) %>%
   mutate(totgr_mmday = sl_mm / age) %>%
   mutate(scaledHD = c(scale(as.numeric(hdate))))
 
@@ -317,24 +341,28 @@ sizeatage$res <- resid(sizeatage_1.1, type = "pearson")
 
 ###--------------Predict & Plot Effects-----------###
 
-sizeatage$predgrowth <- predict(sizeatage_1.1)
 
-mydf<- ggpredict(sizeatage_1.1, terms = c("scaledAge[all]", "hw"))
+SL.effects <- effect(term = c("poly(scaledAge, degree =2) * hw"), mod = sizeatage_1.1, xlevels =100)
+summary(SL.effects)
+plot(SL.effects)
 
 ####------------Figure for MS---------####
 
-tograph <- sizeatage
-tograph$predict_Sl <- predict(sizeatage_1.1)
-tograph$sl_mm <-tograph$predict_Sl
-sizeatage_aged <- sizeatage %>% 
-  filter(Unique.ID < 221)
+meanage <- mean(sizeatage$age)
+sdage <- sd(sizeatage$age)
+sizeatage$agetest <- sizeatage$scaledAge*sdage+meanage
+plot(sizeatage$age, sizeatage$age)
 
-lines <- c("solid", "dashed")
+D.SL.effects <- as.data.frame(SL.effects)
+D.SL.effects$age <- D.SL.effects$scaledAge*sdage+meanage
 
-ggplot(NULL, mapping = aes(age, sl_mm)) + 
-  geom_point(data = sizeatage, aes(x = age, y = sl_mm), color = c("lightgrey"), size = 1)+
-  geom_smooth(size = 1.5, data =tograph, aes(x = age, y = sl_mm, color = hw, linetype = hw))+
+
+ggplot() + 
+  geom_point(data = sizeatage, aes(x = age, y = sl_mm), color = c("lightgrey"), linewidth = 1)+
+  geom_line(data = D.SL.effects, aes(y =fit, x = age, color = hw, linetype = hw), size = 1.5) + 
+  geom_ribbon(data = D.SL.effects, aes(x = age, ymin = lower, ymax = upper,fill = hw), alpha = 0.25)+
   scale_color_manual(values=c("blue", "firebrick"))+
+  scale_fill_manual(values=c("blue", "firebrick"))+
   ylim(4, 18)+
   labs(x = "Age, days", y = "TL at capture, mm")+
   theme_classic(base_size = 22, base_family = "")
@@ -342,15 +370,6 @@ ggplot(NULL, mapping = aes(age, sl_mm)) +
 
 ggsave("Sizeatagemodel.jpg", plot = last_plot(), device = "jpg",
        width = 10, height = 4, units = "in", dpi = 300)
-
-
-
-
-
-
-
-
-
 
 
 

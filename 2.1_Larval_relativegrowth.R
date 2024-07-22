@@ -1,26 +1,38 @@
-#Final code for Miller et al. Older and slower: unexpected effects of marine heatwaves on larval fish.
-#06/04/2024 with R version 4.2.2 (2022-10-31 ucrt)
+#07/22/2024 with R version 4.2.2 (2022-10-31 ucrt)
+#Final code for Miller et al. "Age, not growth, explains larger body size of Pacific cod larvae during recent marine heatwaves"
+#LMM to examine variation in daily growth before and since MHWs
+
+if (!require(rstudioapi)) install.packages('rstudioapi')
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(dplyr)) install.packages('dplyr')
+if (!require(nlme)) install.packages('nmle')
+if (!require(gvlma)) install.packages('gvlma')
+if (!require(car)) install.packages('car')
+if (!require(performance)) install.packages('performance')
+if (!require(effects)) install.packages('effects')
+if (!require(ggeffects)) install.packages('ggeffects')
+if (!require(MuMin)) install.packages('MuMIn')
+if (!require(FSA)) install.packages('FSA')
+if (!require(ggpubr)) install.packages('ggpubr')
 
 library(rstudioapi)
 library(tidyverse)
 library(dplyr)
 library(nlme)
-#library(lme4)
 library(gvlma)
 library(performance)
 library(MuMIn)
-library(report)
 library(car)
 library(FSA) 
 library(effects)
 library(ggeffects)
-
+library(ggpubr)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) 
 
 ####----IMPORT GROWTH DATA----####
 
-all_data <- read.csv("2_all_larvae_somatic_oto.csv") #196
+all_data <- read.csv("2_all_larvae_somatic_oto.csv") 
 
 ####------DATA PREPARATION FOR MODEL----####
 
@@ -93,12 +105,18 @@ early
 
 early + facet_wrap(vars(hcat))
 
+mean(sixto20dayplot$sl_mm)
+sd(sixto20dayplot$sl_mm)
+
 ggsave("mmpermmperday6to20p.jpg", plot = last_plot(), device = "jpg",
        width = 8, height = 6, units = "in", dpi = 300)
 
 
 thirtytofortydayplot <- dailygr.analysis.1 %>%
   filter(dayoflife <46 & dayoflife > 30)
+
+mean(thirtytofortydayplot$sl_mm)
+sd(thirtytofortydayplot$sl_mm)
 
 toplot2<- thirtytofortydayplot #copy data to graph observations not predictions
 toplot2$model2acor_predict <- toplot2$mmpermmperdy
@@ -206,14 +224,14 @@ plot(dailygr.analysis$model2acor_predict,a)
 ####--------------Age X Hatch Date with Data Points--------------#####
 
 mydf2<- ggpredict(model2_lme_acor, terms = c("scaledAge","scaledHD", 'scaledTemp'))
-plot(mydf2)
-
-write.csv(mydf2, "marginalmeansGrowthmodel.csv")
-
 mydf2$mmpermmperdy <- mydf2$predicted
 mydf2$scaledAge <- mydf2$x
 mydf2$scaledHD<- mydf2$group
 mydf2$scaledTemp <- mydf2$facet
+
+a <-mean(dailygr.analysis$dayoflife)
+sd <-sd(dailygr.analysis$dayoflife)
+mydf2$unscaledage <- mydf2$scaledAge*sd+a
 
 
 facet.labs <- c("scaledTemp = -1", "scaledTemp = 0", "scaledTemp = 1")
@@ -229,7 +247,6 @@ dailygr.analysis.1$facet = case_when(dailygr.analysis.1$scaledTemp <= -0.05 & da
 dailygr.analysis.1 <- dailygr.analysis.1[!is.na(dailygr.analysis.1$facet),]
   
 dailygr.analysis.1$facet <-as.factor(dailygr.analysis.1$facet)
-
 
 
 all <- ggplot(NULL, mapping = aes(scaledAge, mmpermmperdy)) + 

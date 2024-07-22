@@ -1,6 +1,18 @@
+#07/22/2024 with R version 4.2.2 (2022-10-31 ucrt)
 
-#Final code for Miller et al. Older and slower: unexpected effects of marine heatwaves on larval fish.
-#06/04/2024 with R version 4.2.2 (2022-10-31 ucrt)
+#Final code for Miller et al. "Age, not growth, explains larger body size of Pacific cod larvae during recent marine heatwaves"
+#Plots of mean daily temperature from hatch to capture
+
+if (!require(rstudioapi)) install.packages('rstudioapi')
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(ggplot2)) install.packages('ggplot2')
+if (!require(dplyr)) install.packages('dplyr')
+if (!require(ggeffects)) install.packages('vctrs')
+if (!require(lme4)) install.packages('lme4')
+if (!require(nlme)) install.packages('nmle')
+if (!require(gvlma)) install.packages('gvlma')
+if (!require(car)) install.packages('car')
+if (!require(ggpubr)) install.packages('ggpubr')
 
 
 library(rstudioapi)
@@ -10,10 +22,11 @@ library(lme4)
 library(ggplot2)
 library(dplyr)
 library(ggpubr)
-library(plyr)
 library(nlme)
 library(car)
 library(gvlma)
+library(ggpubr)
+
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) #sets WD to folder this is saved in
 
