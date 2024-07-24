@@ -43,7 +43,7 @@ HAUL_NAME,NOAA assigned single number identifier for haul
 capdate,date of collection
 hatch.date,estimated hatch date of larvae 
 hatch.date.noYear,hatch date of larvae without year
-hdate,hatch date of larvae in day of year format (1 to 365_
+hdate,hatch date of larvae in day of year format (1 to 365)
 measured_sl_micron,measured total larval length in microns
 station,number of station sampled
 ,
