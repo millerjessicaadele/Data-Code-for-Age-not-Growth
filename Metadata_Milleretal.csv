@@ -31,7 +31,7 @@ Metadata (additional methodological details are in paper).,
 ,
 Field,Attribute
 Unique.ID,Unique number for each larvae
-sl_micron,notochord or total length of larva in micons
+sl_micron,"notochord or total length of larva in microns, corrected for ethanol preservation"
 mean_age,estimated age of larva based on otolith increment analysis
 Cruise,NOAA cruise identifier
 Station,number of station sampled
